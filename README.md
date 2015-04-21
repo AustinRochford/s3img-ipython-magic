@@ -7,7 +7,7 @@ An IPython magic that displays images stored in Amazon S3.  I find this useful w
 
 ## Installation
 
-To install, do `%load_ext https://github.com/AustinRochford/s3img-ipython-magic/s3img_magic.py`.
+To install, do `pip install s3img-ipython-magic` or `%load_ext https://github.com/AustinRochford/s3img-ipython-magic/s3img_magic.py`.
 
 The only dependency (other that IPython) is `boto`.
 
