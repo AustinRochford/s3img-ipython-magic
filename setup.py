@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
     name='s3img-ipython-magic',
-    version='0.0.1',
+    version='0.0.2',
     author="Austin Rochford",
     author_email="austin.rochford@gmail.com",
     description="s3 image line magic for ipython 2 and 3",
