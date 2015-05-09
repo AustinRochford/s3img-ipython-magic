@@ -65,7 +65,7 @@ class S3ImageSaver(Magics):
                 key = get_or_create_s3_key(uri)
                 key.set_contents_from_string(tmp.getvalue())
             except S3ResponseError:
-                print "The requestes S3 bucket does not exist."
+                print "The requested S3 bucket does not exist."
         else:
             print "No figure with the name {} exists in the local scope".format(fig_name)
 
