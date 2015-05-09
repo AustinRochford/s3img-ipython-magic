@@ -4,6 +4,7 @@ from IPython.core.magic import Magics, magics_class, line_magic
 from IPython.display import Image
 
 import boto
+from boto.exception import S3ResponseError
 
 
 def parse_s3_uri(uri):
@@ -34,10 +35,17 @@ def get_or_create_s3_key(uri):
 
 
 def s3img(uri):
-    key = get_s3_key(uri)
-    data = key.get_contents_as_string()
+    try:
+        key = get_s3_key(uri)
 
-    return Image(data=data)
+        if key is not None:
+            data = key.get_contents_as_string()
+
+            return Image(data=data)
+        else:
+            print "The requested S3 key does not exist."
+    except S3ResponseError:
+        print "The requestes S3 bucket does not exist."
 
 
 @magics_class
@@ -51,8 +59,11 @@ class S3ImageSaver(Magics):
         tmp = StringIO()
         fig.savefig(tmp)
 
-        key = get_or_create_s3_key(uri)
-        key.set_contents_from_string(tmp.getvalue())
+        try:
+            key = get_or_create_s3_key(uri)
+            key.set_contents_from_string(tmp.getvalue())
+        except S3ResponseError:
+            print "The requestes S3 bucket does not exist."
 
 
 def load_ipython_extension(ipython):
