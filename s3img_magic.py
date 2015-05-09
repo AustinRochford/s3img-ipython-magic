@@ -35,6 +35,11 @@ def get_or_create_s3_key(uri):
 
 
 def s3img(uri):
+    """
+    %s3img s3_uri
+
+    Display the image at s3_uri
+    """
     try:
         key = get_s3_key(uri)
 
@@ -53,7 +58,13 @@ class S3ImageSaver(Magics):
     @needs_local_scope
     @line_magic
     def s3img_save(self, line, local_ns=None):
-        """BEWARE: this magic will happily overwrite any S3 URI"""
+        """
+        %s3img_save fig s3_uri
+
+        Saves the matplotib figure fig to s3_uri
+
+        BEWARE: this magic will happily overwrite any S3 uri
+        """
         fig_name, uri = line.split(' ', 1)
 
         if local_ns is not None and fig_name in local_ns:
