@@ -1,6 +1,6 @@
 from StringIO import StringIO
 
-from IPython.core.magic import Magics, magics_class, line_magic
+from IPython.core.magic import Magics, line_magic, magics_class, needs_local_scope
 from IPython.display import Image
 
 import boto
@@ -50,20 +50,24 @@ def s3img(uri):
 
 @magics_class
 class S3ImageSaver(Magics):
+    @needs_local_scope
     @line_magic
-    def s3img_save(self, line):
+    def s3img_save(self, line, local_ns=None):
         """BEWARE: this magic will happily overwrite any S3 URI"""
         fig_name, uri = line.split(' ', 1)
 
-        fig = self.shell.ev(fig_name)
-        tmp = StringIO()
-        fig.savefig(tmp)
+        if local_ns is not None and fig_name in local_ns:
+            fig = local_ns[fig_name]
+            tmp = StringIO()
+            fig.savefig(tmp)
 
-        try:
-            key = get_or_create_s3_key(uri)
-            key.set_contents_from_string(tmp.getvalue())
-        except S3ResponseError:
-            print "The requestes S3 bucket does not exist."
+            try:
+                key = get_or_create_s3_key(uri)
+                key.set_contents_from_string(tmp.getvalue())
+            except S3ResponseError:
+                print "The requestes S3 bucket does not exist."
+        else:
+            print "No figure with the name {} exists in the local scope".format(fig_name)
 
 
 def load_ipython_extension(ipython):
