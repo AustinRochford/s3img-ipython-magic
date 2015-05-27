@@ -9,14 +9,14 @@ An IPython magic that displays images stored in Amazon S3.  I find this useful w
 
 * The line magic `%s3img s3_uri` will display the image at the URI `s3_uri` in S3.
 * The line magic `%s3img_save fig s3_uri` will save the `matplotlib` figure `fig` to the URI `s3_uri` in S3.
-* For convenience, the line magic `%s3img_set_base` will set the base S3 URI.  All subsequent uses of S3 image magics will form URIs relative to the base URI.  For example,
+* For convenience, the line magic `%s3img_base_uri` will set the base S3 URI.  All subsequent uses of S3 image magics will form URIs relative to the base URI.  For example,
 
     ```python
-    %s3img_set_base s3://base/
+    %s3img_base_uri s3://base/
     %s3img image.png
     ```
 
-    Will attempt to load the image at `s3://base/image.png`.
+    will attempt to load the image at `s3://base/image.png`.
 
 ## Installation
 
