@@ -81,8 +81,8 @@ class S3ImageMagic(Magics):
         fig_name, uri = line.split(' ', 1)
         s3_uri = self._get_s3_uri(uri)
 
-        if local_ns is not None and fig_name in local_ns:
-            fig = local_ns[fig_name]
+        try:
+            fig = eval(fig_name, None, local_ns)
             tmp = StringIO()
             fig.savefig(tmp)
 
@@ -91,7 +91,7 @@ class S3ImageMagic(Magics):
                 key.set_contents_from_string(tmp.getvalue())
             except S3ResponseError:
                 print "The requested S3 bucket does not exist."
-        else:
+        except Exception:
             print "No figure with the name {} exists in the local scope".format(fig_name)
 
     @line_magic
