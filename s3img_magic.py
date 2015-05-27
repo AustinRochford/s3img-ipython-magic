@@ -78,21 +78,24 @@ class S3ImageMagic(Magics):
 
         BEWARE: this magic will happily overwrite any S3 uri
         """
-        fig_name, uri = line.split(' ', 1)
-        s3_uri = self._get_s3_uri(uri)
-
         try:
-            fig = eval(fig_name, None, local_ns)
-            tmp = StringIO()
-            fig.savefig(tmp)
+            fig_name, uri = line.split(' ', 1)
+            s3_uri = self._get_s3_uri(uri)
 
             try:
-                key = get_or_create_s3_key(s3_uri)
-                key.set_contents_from_string(tmp.getvalue())
-            except S3ResponseError:
-                print "The requested S3 bucket does not exist."
-        except Exception:
-            print "No figure with the name {} exists in the local scope".format(fig_name)
+                fig = eval(fig_name, None, local_ns)
+                tmp = StringIO()
+                fig.savefig(tmp)
+
+                try:
+                    key = get_or_create_s3_key(s3_uri)
+                    key.set_contents_from_string(tmp.getvalue())
+                except S3ResponseError:
+                    print "The requested S3 bucket does not exist."
+            except Exception:
+                print "No figure with the name {} exists in the local scope".format(fig_name)
+        except ValueError:
+            print "Too few arguments, usage: %s3img_save fig s3_uri"
 
     @line_magic
     def s3img_base_uri(self, line):
